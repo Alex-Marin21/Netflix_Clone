@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Netflix Clone</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #141414;
+            color: white;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .navbar-netflix {
+            background-color: #000000;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            color: #e50914;
+            font-weight: bold;
+            font-size: 28px;
+            text-decoration: none;
+        }
+
+        .movie-card {
+            position: relative;
+            transition: transform 0.3s ease;
+            margin-bottom: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .poster-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .movie-title {
+            font-size: 14px;
+            color: #b3b3b3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 5px solid #e50914;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-netflix">
+    <div class="container-fluid">
+        <a class="logo" href="/">NETFLIX CLONE</a>
+
+        <div class="d-flex align-items-center gap-3">
+
+            <form action="/search" method="get" class="d-flex" role="search">
+                <input class="form-control form-control-sm bg-dark text-white border-secondary me-2"
+                       type="search" name="query" placeholder="Titlu..." aria-label="Search"
+                       th:value="${lastQuery}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Search</button>
+            </form>
+
+            <div sec:authorize="!isAuthenticated()">
+                <a href="/login" class="btn btn-sm btn-danger fw-bold me-2">Sign In</a>
+                <a href="/register" class="btn btn-sm btn-secondary fw-bold">Sign Up</a>
+            </div>
+
+            <div sec:authorize="isAuthenticated()" class="d-flex gap-3 align-items-center">
+                <a href="/mylist" class="btn btn-sm btn-transparent text-white fw-bold">My List</a>
+
+                <span class="text-white small d-none d-md-block">
+                    Salut, <span sec:authentication="name" class="fw-bold">User</span>!
+                </span>
+
+                <a sec:authorize="hasRole('ADMIN')" href="/admin" class="btn btn-sm btn-warning fw-bold text-dark me-2">
+                    ADMIN PANEL
+                </a>
+
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-sm btn-outline-light">Log Out</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid px-5 mb-3 d-flex justify-content-center flex-wrap gap-2">
+    <a href="/" class="btn btn-sm btn-outline-light rounded-pill px-3">All</a>
+    <a href="/genre/Action" class="btn btn-sm btn-outline-light rounded-pill px-3">Action</a>
+    <a href="/genre/Comedy" class="btn btn-sm btn-outline-light rounded-pill px-3">Comedy</a>
+    <a href="/genre/Drama" class="btn btn-sm btn-outline-light rounded-pill px-3">Drama</a>
+    <a href="/genre/Horror" class="btn btn-sm btn-outline-light rounded-pill px-3">Horror</a>
+    <a href="/genre/Science-Fiction" class="btn btn-sm btn-outline-light rounded-pill px-3">Sci-Fi</a>
+    <a href="/genre/Thriller" class="btn btn-sm btn-outline-light rounded-pill px-3">Thriller</a>
+    <a href="/genre/Romance" class="btn btn-sm btn-outline-light rounded-pill px-3">Romance</a>
+</div>
+
+<div class="container-fluid px-5">
+    <h4 class="section-title" th:text="${pageTitle}">Popular on Netflix</h4>
+
+    <div class="row">
+        <div class="col-6 col-md-3 col-lg-2" th:each="movie : ${movies}">
+            <div class="movie-card">
+
+                <a th:href="@{/details/{id}(id=${movie.movieId})}" style="text-decoration: none;">
+                    <img th:src="${movie.posterPath}" class="poster-img" alt="Movie Poster">
+                </a>
+
+                <div class="d-flex justify-content-between align-items-center px-1 mt-2">
+                    <p class="movie-title m-0 text-truncate" style="max-width: 70%;" th:text="${movie.title}"></p>
+
+                    <div sec:authorize="isAuthenticated()">
+                        <a th:if="${favorites != null and #sets.contains(favorites, movie)}"
+                           th:href="@{/mylist/remove/{id}(id=${movie.movieId})}"
+                           class="btn btn-sm btn-success text-white fw-bold"
+                           title="Remove from My List">
+                            ✓
+                        </a>
+
+                        <a th:unless="${favorites != null and #sets.contains(favorites, movie)}"
+                           th:href="@{/mylist/add/{id}(id=${movie.movieId})}"
+                           class="btn btn-sm btn-outline-secondary text-white"
+                           title="Add to My List">
+                            +
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${movies.empty}" class="text-center mt-5">
+        <h3>Se incarca filmele...</h3>
+    </div>
+</div>
+
+</body>
+</html>
