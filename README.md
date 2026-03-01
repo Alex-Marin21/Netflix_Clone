@@ -1,70 +1,71 @@
-Netflix Clone - Spring Boot Application
-A high-performance, full-stack Netflix replica built with Spring Boot, featuring a robust security layer, automated movie importing from external APIs, and a personalized user experience.
+# 🎬 Netflix Clone - Spring Boot Full-Stack Application
 
-🚀 Key Features
-Secure Authentication System: Complete flow including user registration, account activation via email codes, and password recovery.
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17%2B-red?style=for-the-badge&logo=java" />
+  <img src="https://img.shields.io/badge/Spring_Boot-3.x-green?style=for-the-badge&logo=springboot" />
+  <img src="https://img.shields.io/badge/Security-Spring_Security-blue?style=for-the-badge&logo=springsecurity" />
+  <img src="https://img.shields.io/badge/Database-MS_SQL_Server-orange?style=for-the-badge&logo=microsoftsqlserver" />
+</p>
 
-Role-Based Access Control: Strict security configurations using Spring Security, with dedicated dashboards for administrators and protected routes for authenticated users.
+---
 
-Automated Content Population: Integrates with the TvMaze API to bulk-import over 1,000 titles, including metadata like descriptions, ratings, and original posters.
+### 🌟 Overview
+A high-performance, full-stack Netflix replica built with **Spring Boot**, featuring a robust security layer, automated movie importing from external APIs, and a highly personalized user experience.
 
-Intelligent Media Discovery:
+---
 
-Search functionality with case-insensitive title matching.
+### 🚀 Key Features
 
-Dynamic genre filtering.
+* **🔐 Secure Authentication System**
+    * Complete flow: Registration -> Email Activation -> Login.
+    * Secure password recovery via email-based verification codes.
+* **🛡️ Role-Based Access Control**
+    * Custom Security Filter Chain managing permissions.
+    * Dedicated **Admin Dashboard** for user management.
+* **📥 Automated Content Population**
+    * Integrates with **TvMaze API** to bulk-import over 1,000 titles.
+    * Stores metadata: original posters, ratings, and cleaned HTML descriptions.
+* **🔍 Intelligent Media Discovery**
+    * Case-insensitive search and dynamic genre filtering.
+    * **Recommendation Engine**: "Similar Movies" using native SQL randomization (`NEWID()`).
+* **📺 Smart Media Integration**
+    * Automated **YouTube trailer lookup** for movies with missing links.
+    * Integrated video player for a seamless viewing experience.
+* **💖 Personalized "My List"**
+    * Persistent favorite collection stored per user.
 
-"Similar Movies" recommendation engine using native SQL randomization.
+---
 
-Personalized "My List": Users can manage a persistent collection of favorite movies stored in a relational database.
+### 🛠️ Technical Stack
 
-Smart Trailer Integration: Automated YouTube trailer lookup for movies with missing media links via a specialized service.
+| Component | Technology |
+| :--- | :--- |
+| **Backend** | Java 17, Spring Boot 3.x |
+| **Security** | Spring Security, BCrypt, JWT Logic |
+| **Data** | Spring Data JPA, Hibernate |
+| **Database** | MS SQL Server |
+| **Mailing** | Spring Mail Sender (SMTP) |
+| **Frontend** | Thymeleaf, Bootstrap, JavaScript |
+| **API Client** | RestTemplate (TvMaze & YouTube Integration) |
 
-🛠️ Technical Stack
-Backend: Java 17+, Spring Boot 3.x, Spring Security.
+---
 
-Persistence: Spring Data JPA, Hibernate.
+### 📂 Architecture
+The project follows a **Clean Architecture** pattern, ensuring each component is isolated and easy to maintain:
 
-Database: Designed for MS SQL Server (utilizes NEWID() for randomizing results).
+```text
+netflix-clone/
+├── ⚙️ config/       # Security & Global Bean Definitions
+├── 🎮 controller/   # Web Endpoints (Auth, Admin, Content)
+├── 📦 dto/          # Data Transfer Objects & Validation
+├── 🏛️ entity/       # JPA Entities (User, Movie)
+├── 📑 repository/   # Database Access Layer
+└── 🛠️ service/      # Business Logic & API Integrations
+⚙️ Quick Start
+1. Clone the Repo: git clone https://github.com/Alex-Marin21/Netflix_Clone.git
 
-Mailing: Spring Boot Starter Mail for verification and reset tokens.
+2. DB Setup: Update application.properties with your SQL Server credentials.
 
-Frontend: Thymeleaf template engine with dynamic attribute binding.
+3. SMTP Setup: Configure your email provider for the verification system.
 
-API Client: RestTemplate for external service communication.
-
-📂 Project Structure
-The project follows a clean, folder-per-component architecture for maximum maintainability:
-
-Plaintext
-
-src/main/java/com/netflixclone/netflix_clone/
-├── config/       # Security and global bean definitions
-├── controller/   # Web controllers for Auth, Admin, and Content
-├── dto/          # Data Transfer Objects for validation and API mapping
-├── entity/       # JPA Entities (User, Movie)
-├── repository/   # Data access interfaces
-└── service/      # Business logic and external integrations
-⚙️ Setup & Installation
-Clone the repository:
-
-Bash
-
-git clone https://github.com/Alex-Marin21/Netflix_Clone.git
-Configure Database: Update src/main/resources/application.properties with your MS SQL Server credentials.
-
-Mail Server: Configure your SMTP settings in application.properties to enable account verification features.
-
-Run the application:
-
-Bash
-
-mvn spring-boot:run
-Import Content: The application is equipped with a MovieImportService. You can trigger the importMovies() method to populate your local database with initial data.
-
-🔐 Security Overview
-The application implements a custom UserDetailsService that maps database users to Spring Security principals, appending a ROLE_ prefix to user roles.
-
-Passwords: Encrypted using BCrypt.
-
-Verification: Accounts are disabled by default until the correct 6-digit code is provided.
+4. Run: Execute mvn spring-boot:run and enjoy!
