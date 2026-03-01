@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/** Clasa Entitate pentru maparea tabelului USERS din baza de date
+ * @author Marin-Sirbu Alex-Florin
+ * @version 10 Ianuarie 2026
+ */
 @Entity
 @Table(name = "USERS")
 public class User {
@@ -36,14 +40,6 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role = "USER";
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "USER_MOVIE_LIST",
@@ -63,20 +59,13 @@ public class User {
         this.enabled = true;
     }
 
+    // Metode ajutatoare pentru lista de favorite
     public void addMovie(Movie movie) {
         this.favoriteMovies.add(movie);
     }
 
     public void removeMovie(Movie movie) {
         this.favoriteMovies.remove(movie);
-    }
-
-    public Set<Movie> getFavoriteMovies() {
-        return favoriteMovies;
-    }
-
-    public void setFavoriteMovies(Set<Movie> favoriteMovies) {
-        this.favoriteMovies = favoriteMovies;
     }
 
     public Integer getUserId() {
@@ -134,9 +123,23 @@ public class User {
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
     }
-    // ==========================================
-    // EQUALS & HASHCODE
-    // ==========================================
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Set<Movie> getFavoriteMovies() {
+        return favoriteMovies;
+    }
+
+    public void setFavoriteMovies(Set<Movie> favoriteMovies) {
+        this.favoriteMovies = favoriteMovies;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

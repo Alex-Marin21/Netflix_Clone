@@ -8,6 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/** Clasa pentru configurarea securitatii Spring Security si a regulilor de acces
+ * @author Marin-Sirbu Alex-Florin
+ * @version 10 Ianuarie 2026
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -21,7 +25,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/register",
@@ -33,7 +36,6 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/images/**",
                                 "/error"
                         ).permitAll()
-
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -50,7 +52,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
-
 }

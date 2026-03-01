@@ -10,10 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-/**
- * Custom implementation of Spring Security's UserDetailsService interface.
- * Serves as the bridge between the database (UserRepository) and the Spring Security authentication provider.
- * Responsible for loading user-specific data during the login process.
+/** Clasa pentru integrarea cu Spring Security si incarcarea utilizatorilor din baza de date
+ * @author Marin-Sirbu Alex-Florin
+ * @version 10 Ianuarie 2026
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -24,30 +23,19 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Locates the user based on the username.
-     * Retrieves the user entity from the database and maps it to a Spring Security compatible UserDetails object.
-     *
-     * @param username the username identifying the user whose data is required.
-     * @return a fully populated user record (never null).
-     * @throws UsernameNotFoundException if the user could not be found or the user has no GrantedAuthority.
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 1. Retrieve the user from the database; throw exception if not found
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password."));
 
-        // 2. Prepare the authority (role) string. Spring Security typically expects the "ROLE_" prefix.
         String roleName = "ROLE_" + user.getRole();
 
-        // 3. Map the application User entity to Spring Security's UserDetails object
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPasswordHash(),
-                user.getEnabled(), // Account enabled status
-                true, true, true, // Account non-expired, credentials non-expired, account non-locked
-                Collections.singletonList(new SimpleGrantedAuthority(roleName)) // Set the granted authority
+                user.getEnabled(),
+                true, true, true,
+                Collections.singletonList(new SimpleGrantedAuthority(roleName))
         );
     }
 }

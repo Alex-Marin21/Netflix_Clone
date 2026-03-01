@@ -3,154 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix Clone - Register</title>
-
+    <title>Netflix - Sign Up</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        /* Stiluri personalizate pentru tema Netflix Dark */
         body {
-            background-color: #141414; /* Negru Netflix */
+            background-color: #141414;
             color: white;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            /* Imagine de fundal opțională - poți șterge linia asta dacă vrei doar negru */
             background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://assets.nflxext.com/ffe/siteui/vlv3/f841d4c7-10e1-40af-bcae-07a3f8dc141a/f6d7434e-d6de-4185-a6d4-c77a2d08737b/RO-en-20220502-popsignuptwoweeks-perspective_alpha_website_medium.jpg');
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Logo Header */
+        .logo {
+            margin-top: 25px;
+            margin-left: 50px;
+            color: #e50914;
+            font-weight: 800;
+            font-size: 40px;
+            text-decoration: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .register-container {
+            flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 50px 0;
         }
 
-        .card {
-            background-color: rgba(0, 0, 0, 0.75); /* Negru transparent */
+        .card-netflix {
+            background-color: rgba(0, 0, 0, 0.75);
             border: none;
             border-radius: 4px;
             padding: 60px 68px 40px;
             min-width: 450px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         h2 {
             font-weight: 700;
+            font-size: 32px;
             margin-bottom: 28px;
         }
 
-        .form-control {
-            background-color: #333;
+        /* Inputs */
+        .form-control-netflix {
+            background: #333;
             border: none;
             border-radius: 4px;
             color: white;
             height: 50px;
+            font-size: 16px;
+            padding: 16px 20px;
         }
 
-        .form-control:focus {
-            background-color: #454545;
+        .form-control-netflix:focus {
+            background: #454545;
             color: white;
-            border-bottom: 2px solid #e50914; /* Linie rosie la focus */
             box-shadow: none;
+            outline: none;
+            border-bottom: 2px solid #e50914;
         }
 
-        /* Placeholder gri deschis */
-        .form-control::placeholder {
+        .form-control-netflix::placeholder {
             color: #8c8c8c;
         }
 
+        .form-floating > label {
+            color: #8c8c8c;
+        }
+
+        /* Button */
         .btn-netflix {
             background-color: #e50914;
             color: white;
             font-weight: 700;
+            font-size: 16px;
             border: none;
             border-radius: 4px;
-            padding: 12px 24px;
+            padding: 16px;
             margin-top: 24px;
             width: 100%;
-            font-size: 16px;
+            transition: background 0.2s;
         }
 
         .btn-netflix:hover {
             background-color: #f40612;
-            color: white;
         }
 
-        .text-danger {
+        /* Error Messages */
+        .validation-error {
+            color: #e87c03;
             font-size: 13px;
-            color: #e87c03 !important; /* Portocaliu-Netflix pentru erori */
             margin-top: 6px;
-            display: block;
+            text-align: left;
         }
 
-        .link-sub {
+        .alert-success-netflix {
+            background-color: #46d369;
+            color: black;
+            font-weight: bold;
+            border: none;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        /* Links */
+        .login-text {
             color: #737373;
             font-size: 16px;
+            margin-top: 16px;
         }
 
-        .link-white {
+        .login-text a {
             color: white;
             text-decoration: none;
         }
 
-        .link-white:hover {
+        .login-text a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2 class="text-start">Sign Up</h2>
+<a href="/" class="logo">NETFLIX CLONE</a>
 
-    <div th:if="${param.success}" class="alert alert-success">
-        Cont creat cu succes!
-    </div>
+<div class="register-container">
+    <div class="card-netflix">
+        <h2>Sign Up</h2>
 
-    <div th:if="${error}" class="alert alert-danger">
-        <span th:text="${error}"></span>
-    </div>
-
-    <form method="post" role="form" th:action="@{/register}" th:object="${user}" novalidate>
-
-        <div class="mb-3">
-            <input class="form-control"
-                   id="username"
-                   name="username"
-                   placeholder="Username"
-                   th:field="*{username}"
-                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
-                   type="text"/>
-
-            <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        <div th:if="${param.success}" class="alert-success-netflix">
+            Account created successfully! You can now log in.
         </div>
 
-        <div class="mb-3">
-            <input class="form-control"
-                   id="email"
-                   name="email"
-                   placeholder="Email"
-                   th:field="*{email}"
-                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
-                   type="email"/>
-
-            <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        <div th:if="${error}" class="alert alert-danger" style="background: #e87c03; border: none; color: white;">
+            <span th:text="${error}"></span>
         </div>
 
-        <div class="mb-3">
-            <input class="form-control"
-                   id="password"
-                   name="password"
-                   placeholder="Password"
-                   th:field="*{password}"
-                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
-                   type="password"/>
+        <form method="post" role="form" th:action="@{/register}" th:object="${user}" novalidate>
 
-            <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            <div class="mb-3">
+                <input class="form-control form-control-netflix"
+                       id="username"
+                       name="username"
+                       placeholder="Username"
+                       th:field="*{username}"
+                       th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
+                       type="text"/>
+
+                <div class="validation-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control form-control-netflix"
+                       id="email"
+                       name="email"
+                       placeholder="Email Address"
+                       th:field="*{email}"
+                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                       type="email"/>
+
+                <div class="validation-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control form-control-netflix"
+                       id="password"
+                       name="password"
+                       placeholder="Password"
+                       th:field="*{password}"
+                       th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                       type="password"/>
+
+                <div class="validation-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
+
+            <button class="btn-netflix" type="submit">Start Membership</button>
+        </form>
+
+        <div class="login-text">
+            Already have an account? <a href="/login">Sign In now</a>.
         </div>
 
-        <button class="btn btn-netflix" type="submit">Sign Up</button>
-    </form>
-
-    <div class="mt-4 link-sub">
-        Ai deja cont? <a href="/login" class="link-white">Conectează-te (Sign In)</a>.
     </div>
 </div>
 

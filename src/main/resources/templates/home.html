@@ -3,66 +3,162 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Netflix Clone</title>
+    <title>Netflix Clone - Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
+        /* --- GLOBAL STYLES --- */
         body {
             background-color: #141414;
-            color: white;
+            color: #ffffff;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
         }
 
+        /* --- NAVBAR --- */
         .navbar-netflix {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
             background-color: #000000;
-            padding: 15px 30px;
+            padding: 15px 4%;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .logo {
             color: #e50914;
-            font-weight: bold;
-            font-size: 28px;
+            font-weight: 800;
+            font-size: 30px;
             text-decoration: none;
+            letter-spacing: 1px;
+            text-shadow: 0px 0px 10px rgba(229, 9, 20, 0.7);
         }
 
+        .logo:hover { color: #ff0a16; }
+
+        /* --- GENRE PILLS --- */
+        .genre-btn {
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .genre-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+            border-color: white;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* --- MOVIE CARDS --- */
         .movie-card {
             position: relative;
-            transition: transform 0.3s ease;
-            margin-bottom: 40px;
-            border-radius: 4px;
+            border-radius: 6px;
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-bottom: 30px;
+            aspect-ratio: 2/3;
         }
 
+        /* Hover Effect: Scale Up & Glow */
         .movie-card:hover {
-            transform: scale(1.05);
-            z-index: 10;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            transform: scale(1.1);
+            z-index: 99;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Link-ul care inveleste imaginea */
+        .poster-link {
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
         }
 
         .poster-img {
             width: 100%;
-            height: 350px;
+            height: 100%;
             object-fit: cover;
-            border-radius: 4px;
-            cursor: pointer;
+            display: block;
         }
 
-        .movie-title {
-            font-size: 14px;
-            color: #b3b3b3;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        /* Overlay Info */
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+
+            /* TRUCUL MAGIC: */
+            /* Lasam click-urile sa treaca PRIN overlay catre imagine */
+            pointer-events: none;
         }
 
-        .section-title {
+        .movie-card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        /* Reactivam click-urile DOAR pentru elementele interactive din overlay */
+        .interactive-content {
+            pointer-events: auto; /* Titlul si butoanele devin clicabile */
+        }
+
+        .card-title {
+            font-size: 1rem;
             font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            padding-left: 10px;
-            border-left: 5px solid #e50914;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            margin-bottom: 8px;
+            line-height: 1.2;
+            color: white;
+            text-decoration: none;
+            display: block;
+            white-space: normal; /* Permite textului lung sa treaca pe randul urmator */
+        }
+
+        .card-title:hover { color: #e5e5e5; }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: transform 0.2s;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(0,0,0,0.6);
+            z-index: 102;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+            background: white;
+            border-color: white;
+        }
+
+        .btn-add { color: white; }
+        .btn-add:hover { color: black; }
+
+        .btn-remove { color: #46d369; border-color: #46d369; }
+        .btn-remove:hover { background: #46d369; color: black; }
+
+        /* --- SECTION TITLE --- */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 30px 0 15px 0;
+            color: #e5e5e5;
         }
     </style>
 </head>
@@ -76,29 +172,28 @@
 
             <form action="/search" method="get" class="d-flex" role="search">
                 <input class="form-control form-control-sm bg-dark text-white border-secondary me-2"
-                       type="search" name="query" placeholder="Titlu..." aria-label="Search"
-                       th:value="${lastQuery}">
-                <button class="btn btn-sm btn-outline-danger" type="submit">Search</button>
+                       style="background-color: rgba(0,0,0,0.7) !important;"
+                       type="search" name="query" placeholder="Search titles..."
+                       aria-label="Search" th:value="${lastQuery}">
             </form>
 
             <div sec:authorize="!isAuthenticated()">
-                <a href="/login" class="btn btn-sm btn-danger fw-bold me-2">Sign In</a>
-                <a href="/register" class="btn btn-sm btn-secondary fw-bold">Sign Up</a>
+                <a href="/login" class="btn btn-sm btn-danger fw-bold px-3">Sign In</a>
             </div>
 
             <div sec:authorize="isAuthenticated()" class="d-flex gap-3 align-items-center">
-                <a href="/mylist" class="btn btn-sm btn-transparent text-white fw-bold">My List</a>
+                <a href="/mylist" class="btn btn-sm text-white fw-bold">My List</a>
 
-                <span class="text-white small d-none d-md-block">
-                    Salut, <span sec:authentication="name" class="fw-bold">User</span>!
+                <span class="text-white small d-none d-md-block opacity-75">
+                    Hello, <span sec:authentication="name" class="fw-bold text-white">User</span>
                 </span>
 
-                <a sec:authorize="hasRole('ADMIN')" href="/admin" class="btn btn-sm btn-warning fw-bold text-dark me-2">
-                    ADMIN PANEL
+                <a sec:authorize="hasRole('ADMIN')" href="/admin" class="btn btn-sm btn-warning fw-bold text-dark px-2">
+                    ADMIN
                 </a>
 
                 <form th:action="@{/logout}" method="post" class="m-0">
-                    <button type="submit" class="btn btn-sm btn-outline-light">Log Out</button>
+                    <button type="submit" class="btn btn-sm btn-outline-light px-3">Exit</button>
                 </form>
             </div>
 
@@ -106,53 +201,62 @@
     </div>
 </nav>
 
-<div class="container-fluid px-5 mb-3 d-flex justify-content-center flex-wrap gap-2">
-    <a href="/" class="btn btn-sm btn-outline-light rounded-pill px-3">All</a>
-    <a href="/genre/Action" class="btn btn-sm btn-outline-light rounded-pill px-3">Action</a>
-    <a href="/genre/Comedy" class="btn btn-sm btn-outline-light rounded-pill px-3">Comedy</a>
-    <a href="/genre/Drama" class="btn btn-sm btn-outline-light rounded-pill px-3">Drama</a>
-    <a href="/genre/Horror" class="btn btn-sm btn-outline-light rounded-pill px-3">Horror</a>
-    <a href="/genre/Science-Fiction" class="btn btn-sm btn-outline-light rounded-pill px-3">Sci-Fi</a>
-    <a href="/genre/Thriller" class="btn btn-sm btn-outline-light rounded-pill px-3">Thriller</a>
-    <a href="/genre/Romance" class="btn btn-sm btn-outline-light rounded-pill px-3">Romance</a>
+<div class="container-fluid px-5 mt-4 d-flex justify-content-center flex-wrap gap-2">
+    <a href="/" class="btn btn-sm rounded-pill px-3 genre-btn">All Movies</a>
+    <a href="/genre/Action" class="btn btn-sm rounded-pill px-3 genre-btn">Action</a>
+    <a href="/genre/Comedy" class="btn btn-sm rounded-pill px-3 genre-btn">Comedy</a>
+    <a href="/genre/Drama" class="btn btn-sm rounded-pill px-3 genre-btn">Drama</a>
+    <a href="/genre/Horror" class="btn btn-sm rounded-pill px-3 genre-btn">Horror</a>
+    <a href="/genre/Science-Fiction" class="btn btn-sm rounded-pill px-3 genre-btn">Sci-Fi</a>
+    <a href="/genre/Thriller" class="btn btn-sm rounded-pill px-3 genre-btn">Thriller</a>
 </div>
 
-<div class="container-fluid px-5">
+<div class="container-fluid px-5 pb-5">
     <h4 class="section-title" th:text="${pageTitle}">Popular on Netflix</h4>
 
-    <div class="row">
-        <div class="col-6 col-md-3 col-lg-2" th:each="movie : ${movies}">
-            <div class="movie-card">
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+        <div class="col" th:each="movie : ${movies}">
 
-                <a th:href="@{/details/{id}(id=${movie.movieId})}" style="text-decoration: none;">
-                    <img th:src="${movie.posterPath}" class="poster-img" alt="Movie Poster">
+            <div class="movie-card">
+                <a th:href="@{/details/{id}(id=${movie.movieId})}" class="poster-link">
+                    <img th:src="${movie.posterPath}" class="poster-img" alt="Poster">
                 </a>
 
-                <div class="d-flex justify-content-between align-items-center px-1 mt-2">
-                    <p class="movie-title m-0 text-truncate" style="max-width: 70%;" th:text="${movie.title}"></p>
+                <div class="card-overlay">
+                    <div class="d-flex justify-content-between align-items-end h-100 p-2">
 
-                    <div sec:authorize="isAuthenticated()">
-                        <a th:if="${favorites != null and #sets.contains(favorites, movie)}"
-                           th:href="@{/mylist/remove/{id}(id=${movie.movieId})}"
-                           class="btn btn-sm btn-success text-white fw-bold"
-                           title="Remove from My List">
-                            ✓
-                        </a>
+                        <div class="interactive-content" style="width: 75%;">
+                            <a th:href="@{/details/{id}(id=${movie.movieId})}" style="text-decoration:none;">
+                                <span class="card-title" th:text="${movie.title}">Movie Title</span>
+                            </a>
+                            <span class="badge bg-danger" th:text="${movie.rating != null ? movie.rating : 'N/A'}">8.5</span>
+                        </div>
 
-                        <a th:unless="${favorites != null and #sets.contains(favorites, movie)}"
-                           th:href="@{/mylist/add/{id}(id=${movie.movieId})}"
-                           class="btn btn-sm btn-outline-secondary text-white"
-                           title="Add to My List">
-                            +
-                        </a>
+                        <div sec:authorize="isAuthenticated()" class="interactive-content">
+                            <a th:if="${favorites != null and #sets.contains(favorites, movie)}"
+                               th:href="@{/mylist/remove/{id}(id=${movie.movieId})}"
+                               class="action-btn btn-remove"
+                               title="Remove from My List">
+                                ✓
+                            </a>
+
+                            <a th:unless="${favorites != null and #sets.contains(favorites, movie)}"
+                               th:href="@{/mylist/add/{id}(id=${movie.movieId})}"
+                               class="action-btn btn-add"
+                               title="Add to My List">
+                                +
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <div th:if="${movies.empty}" class="text-center mt-5">
-        <h3>Se incarca filmele...</h3>
+    <div th:if="${movies.empty}" class="text-center mt-5 opacity-50">
+        <div class="spinner-border text-danger mb-3" role="status"></div>
+        <h4>Loading movies from database...</h4>
     </div>
 </div>
 

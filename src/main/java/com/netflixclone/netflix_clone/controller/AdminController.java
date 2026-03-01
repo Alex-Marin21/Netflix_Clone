@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-/**
- * Controller responsible for administrative operations.
- * Manages the admin dashboard and user account administration.
+/** Clasa pentru gestionarea panoului de administrare si a utilizatorilor
+ * @author Marin-Sirbu Alex-Florin
+ * @version 10 Ianuarie 2026
  */
 @Controller
 @RequestMapping("/admin")
@@ -25,12 +25,6 @@ public class AdminController {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Retrieves the list of all registered users and displays the admin dashboard.
-     *
-     * @param model the UI model used to pass data to the view
-     * @return the name of the Thymeleaf template for the admin dashboard
-     */
     @GetMapping
     public String adminDashboard(Model model) {
         List<User> allUsers = userRepository.findAll();
@@ -38,12 +32,6 @@ public class AdminController {
         return "admin_dashboard";
     }
 
-    /**
-     * Permanently deletes a user account from the system based on their ID.
-     *
-     * @param id the unique identifier of the user to be deleted
-     * @return a redirect string to the admin dashboard with a success parameter
-     */
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable Integer id) {
         userRepository.deleteById(id);
