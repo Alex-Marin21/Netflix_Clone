@@ -1,10 +1,14 @@
-package com.netflixclone.netflix_clone.entity; // Verifica sa fie pachetul tau corect
+package com.netflixclone.netflix_clone.entity;
 
 import jakarta.persistence.*;
 import java.util.Objects;
 
+/** Clasa Entitate pentru maparea tabelului MOVIES din baza de date
+ * @author Marin-Sirbu Alex-Florin
+ * @version 10 Ianuarie 2026
+ */
 @Entity
-@Table(name = "MOVIES") // Mapam pe tabelul MOVIES din SQL Server
+@Table(name = "MOVIES")
 public class Movie {
 
     @Id
@@ -13,7 +17,7 @@ public class Movie {
     private Integer movieId;
 
     @Column(name = "tmdb_id", nullable = false, unique = true)
-    private Integer tmdbId; // ID-ul filmului de la API-ul extern (TheMovieDB)
+    private Integer tmdbId;
 
     @Column(name = "title", nullable = false, length = 200)
     private String title;
@@ -28,29 +32,13 @@ public class Movie {
     private String description;
 
     @Column(name = "rating")
-    private Double rating; // Nota (ex: 8.5)
+    private Double rating;
 
     @Column(name = "release_date")
     private String releaseDate;
 
     @Column(name = "trailer_url")
     private String trailerUrl;
-
-    public String getTrailerUrl() { return trailerUrl; }
-    public void setTrailerUrl(String trailerUrl) { this.trailerUrl = trailerUrl; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public Double getRating() { return rating; }
-    public void setRating(Double rating) { this.rating = rating; }
-
-    public String getReleaseDate() { return releaseDate; }
-    public void setReleaseDate(String releaseDate) { this.releaseDate = releaseDate; }
-
-    public String getGenres() { return genres; }
-    public void setGenres(String genres) { this.genres = genres; }
-
 
     public Movie() {
     }
@@ -60,10 +48,6 @@ public class Movie {
         this.title = title;
         this.posterPath = posterPath;
     }
-
-    // ==========================================
-    // GETTERS & SETTERS
-    // ==========================================
 
     public Integer getMovieId() {
         return movieId;
@@ -97,9 +81,46 @@ public class Movie {
         this.posterPath = posterPath;
     }
 
-    // ==========================================
-    // EQUALS & HASHCODE
-    // ==========================================
+    public String getGenres() {
+        return genres;
+    }
+
+    public void setGenres(String genres) {
+        this.genres = genres;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getTrailerUrl() {
+        return trailerUrl;
+    }
+
+    public void setTrailerUrl(String trailerUrl) {
+        this.trailerUrl = trailerUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

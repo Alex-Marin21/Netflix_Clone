@@ -14,9 +14,9 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Controller responsible for the main application landing page.
- * Handles displaying the movie catalog, search functionality, and genre filtering.
+/** Clasa pentru gestionarea paginii principale si a filtrarii filmelor
+ * @author Marin-Sirbu Alex-Florin
+ * @version 10 Ianuarie 2026
  */
 @Controller
 public class HomeController {
@@ -29,14 +29,6 @@ public class HomeController {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Displays the main home page featuring the entire catalog of movies.
-     * Populates the model with popular movies and the user's favorite list for UI state.
-     *
-     * @param model     the UI model used to pass data to the view
-     * @param principal the currently authenticated user (used to fetch favorites)
-     * @return the name of the home view template
-     */
     @GetMapping("/")
     public String home(Model model, Principal principal) {
         List<Movie> movies = movieRepository.findAll();
@@ -46,18 +38,8 @@ public class HomeController {
         return "home";
     }
 
-    /**
-     * Handles search requests by filtering movies based on the provided query string.
-     * Reuses the home view to display search results.
-     *
-     * @param query     the search keyword provided by the user
-     * @param model     the UI model used to pass data to the view
-     * @param principal the currently authenticated user
-     * @return the name of the home view template with filtered results
-     */
     @GetMapping("/search")
     public String search(@RequestParam("query") String query, Model model, Principal principal) {
-        // Search the database for titles containing the query string (case-insensitive)
         List<Movie> movies = movieRepository.findByTitleContainingIgnoreCase(query);
 
         model.addAttribute("movies", movies);
@@ -69,18 +51,8 @@ public class HomeController {
         return "home";
     }
 
-    /**
-     * Filters the movie catalog based on a specific genre category.
-     * Displays the subset of movies matching the requested genre.
-     *
-     * @param genreName the name of the genre to filter by (e.g., "Action", "Drama")
-     * @param model     the UI model used to pass data to the view
-     * @param principal the currently authenticated user
-     * @return the name of the home view template with filtered results
-     */
     @GetMapping("/genre/{genreName}")
     public String filterByGenre(@PathVariable String genreName, Model model, Principal principal) {
-        // Retrieve only movies that contain the specified genre tag
         List<Movie> movies = movieRepository.findByGenresContaining(genreName);
 
         model.addAttribute("movies", movies);
@@ -91,14 +63,6 @@ public class HomeController {
         return "home";
     }
 
-    /**
-     * Helper method to inject the authenticated user's favorite movies into the model.
-     * This allows the UI to correctly render 'Add to List' vs 'Remove from List' buttons
-     * by checking if a displayed movie is already in the user's favorites.
-     *
-     * @param model     the UI model to update
-     * @param principal the currently authenticated user
-     */
     private void addFavoritesToModel(Model model, Principal principal) {
         if (principal != null) {
             String username = principal.getName();
@@ -107,7 +71,6 @@ public class HomeController {
                 model.addAttribute("favorites", user.getFavoriteMovies());
             }
         } else {
-            // If the user is not logged in, pass an empty set to avoid null pointer exceptions in the view
             model.addAttribute("favorites", new HashSet<>());
         }
     }
